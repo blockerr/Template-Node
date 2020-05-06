@@ -82,5 +82,91 @@ module.exports = {
     } catch (err) {
       return res.status(500)
     }
+  },
+  update: async (req, res, next) => {
+    try {
+      const { id } = req.params;
+      const data = req.body;
+      const findUserName = await Admin.findOne({ where: { username: data.username } });
+      const findUserEmail = await Admin.findOne({ where: { email: data.email } });
+
+      if (findUserName != null && findUserEmail != null && findUserName.id != id && findUserEmail.id != id) {
+        const err_msg = [{
+          error: 'username đã tồn tại',
+          field: "username"
+        }, {
+          error: 'email đã tồn tại',
+          field: "email"
+        }];
+        return res.status(400).json(err_msg);
+      }
+      if (findUserName != null && findUserName.id != id) {
+        const err_msg = [{
+          error: 'username đã tồn tại',
+          field: "username"
+        }];
+        return res.status(400).json(err_msg);
+      }
+      if (findUserEmail != null && findUserEmail.id != id) {
+        const err_msg = [{
+          error: 'email đã tồn tại',
+          field: "email"
+        }];
+        return res.status(400).json(err_msg);
+      }
+      const updateUser = await Admin.update(data, { where: { id: id }, returning: true });
+      return res.status(200).json(updateUser[1])
+    } catch (err) {
+      return res.status(500).json(err);
+    }
+  },
+
+  list: async (req, res, next) => {
+    try {
+      const list = await Admin.findAll();
+      return res.status(200).json(list);
+    } catch (err) {
+      return res.status(500).json();
+    }
+  },
+
+  changePassword: async (req, res, next) => {
+    try {
+      const decoded = req.headers['token'];
+      const id = decoded.id;
+      const { password, new_password } = req.body;
+      const newPassword = await bcrypt.hash(new_password, 10);
+      const update_at = moment().format();
+      const userExist = await Admin.findOne({ where: { id: id } });
+      if (userExist == null) {
+        return res.status(404).json();
+      }
+      await bcrypt.compare(password, userExist.dataValues.password, (err, result) => {
+        if (result) {
+          Admin.update({ password: newPassword, update_at: update_at }, { where: { id: id } });
+          return res.status(200).json();
+        }
+        return res.status(403).json();
+      })
+    }
+    catch (err) {
+      logging.error(err);
+      return res.status(500).json();
+    }
+  },
+
+  delete: async (req, res, next) => {
+    try {
+      const { id } = req.params;
+      const deleteUser = await Admin.destroy({ where: { id: id } });
+      console.log(deleteUser)
+      if (!deleteUser) {
+        return res.status(404).json();
+      }
+      return res.status(200).json();
+    } catch (err) {
+      return res.status(500).json(err);
+    }
   }
+
 }

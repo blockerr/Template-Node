@@ -16,6 +16,8 @@ Investor.init({
   representative: DataTypes.STRING,
   avatar: DataTypes.STRING,
   address: DataTypes.STRING, 
+  hire_date: DataTypes.DATE,
+  expire_date: DataTypes.DATE,
   avatar: DataTypes.STRING,
   create_at: DataTypes.DATE,
   update_at: DataTypes.DATE,

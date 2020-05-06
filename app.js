@@ -15,6 +15,8 @@ var http = require('http').createServer(app);
 // import handler
 const sequelize = require('./services/database');
 var adminRouter = require('./routes/admin'); 
+var lotRouter = require('./routes/lot')
+var investorRouter = require('./routes/investor')
 
 // check auth sequelize
 sequelize
@@ -40,8 +42,11 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+// declare use router
 app.use(process.env.BASE_PATH, indexRouter);
 app.use(process.env.BASE_PATH, adminRouter);
+app.use(process.env.BASE_PATH, lotRouter);
+app.use(process.env.BASE_PATH, investorRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

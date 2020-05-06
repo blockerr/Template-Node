@@ -3,7 +3,7 @@ const db = require('../services/database');
 
 class Admin extends Model {}
 Admin.init({
-  id: {
+  admin_id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
     autoIncrement: true,

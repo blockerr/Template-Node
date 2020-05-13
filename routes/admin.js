@@ -8,7 +8,7 @@ router.route('/admin/signup')
   .post(adminController.signup)
 
 router.route('/admin/signin')
-  .post(adminController.signin)
+  .post(adminController.signin) 
 
 router.route('/admins')
   .get(auth, adminController.list)

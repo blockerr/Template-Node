@@ -7,7 +7,7 @@ dotenv.config();
 
 module.exports = {
   signup: async (req, res) => {
-    try {
+    try { 
       const data = req.body;
       data.password = await bcrypt.hash(data.password, 10);
       data.create_at = moment().format();
@@ -45,13 +45,13 @@ module.exports = {
       const newAdmin = await Admin.create(data);
       return res.status(201).json(newAdmin);
     } catch (err) {
-      return res.status(500)
+      return res.status(500) 
     }
-  },
+  }, 
 
   signin: async (req, res) => {
     try {
-      const loginData = await req.body;
+      const loginData = req.body;
       const findUser = await Admin.findOne({ where: { username: loginData.username } });
       if (findUser == null) {
         const err = [{
@@ -127,7 +127,7 @@ module.exports = {
       const list = await Admin.findAll();
       return res.status(200).json(list);
     } catch (err) {
-      return res.status(500).json();
+      return res.status(500).json(err);
     }
   },
 
@@ -160,7 +160,6 @@ module.exports = {
     try {
       const { id } = req.params;
       const deleteUser = await Admin.destroy({ where: { admin_id: id } });
-      console.log(deleteUser)
       if (!deleteUser) {
         return res.status(404).json();
       }
@@ -168,6 +167,20 @@ module.exports = {
     } catch (err) {
       return res.status(500).json(err);
     }
+  },
+
+  employee: async (req, res, next) => {
+    try {
+      const { id } = req.params;
+      const empl = await Admin.findOne({ where: { admin_id: id } });
+      if (!empl) {
+        return res.status(404).json();
+      }
+      return res.status(200).json();
+    } catch (err) {
+      return res.status(500).json(err);
+    }
   }
+
 
 }

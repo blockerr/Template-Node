@@ -2,17 +2,19 @@ const Admin = require('../models/admin');
 const moment = require('moment');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const fs = require('fs');
+const uuid = require('../util/uuid');
 const dotenv = require('dotenv');
 dotenv.config();
 
 module.exports = {
   signup: async (req, res) => {
-    try { 
+    try {
       const data = req.body;
       data.password = await bcrypt.hash(data.password, 10);
       data.create_at = moment().format();
       data.update_at = moment().format();
-      data.role = "empl"
+      data.role = "empl";
       const findEmail = await Admin.findOne({ where: { email: data.email } });
       const findUsername = await Admin.findOne({ where: { username: data.username } });
 
@@ -45,9 +47,9 @@ module.exports = {
       const newAdmin = await Admin.create(data);
       return res.status(201).json(newAdmin);
     } catch (err) {
-      return res.status(500) 
+      return res.status(500)
     }
-  }, 
+  },
 
   signin: async (req, res) => {
     try {
@@ -176,9 +178,56 @@ module.exports = {
       if (!empl) {
         return res.status(404).json();
       }
-      return res.status(200).json();
+      return res.status(200).json(empl);
     } catch (err) {
       return res.status(500).json(err);
+    }
+  },
+
+  updateAvatar: async (req, res, next) => {
+    try {
+      const { id } = req.params;
+      const file = req.file
+      const dir = process.env.PATH_FILE;
+      const fileName = uuid.uuid() + '_' + file.originalname;
+      const path = fileName
+      const findOldAvatar = await Admin.findOne({where: {admin_id: id}});
+      if (!findOldAvatar){
+        err_msg = [{
+          error: 'Không tồn tại người dùng',
+          field: "Avatar"
+        }]
+        return res.status(404).json(err_msg)
+      }
+      if (findOldAvatar.avatar != null){
+        fs.unlink(dir + '/' + findOldAvatar.avatar, (err) => {
+          if (err) {
+            console.error(err)
+            return
+          }
+        })
+      }
+
+      if (!fs.existsSync(dir)) {
+        fs.mkdirSync(dir);
+      }
+      fs.writeFile(`${dir}/${fileName}`, file.buffer, function (err) {
+        if (err) {
+          return res.status(400).json('Không thể lưu file')
+        }
+      });
+      const updateEmpl = await Admin.update({ avatar: path }, { where: { admin_id: id }, returning: true  })
+      if (updateEmpl == 0){
+        const err_msg = [{
+          error: 'Không tồn tại người dùng',
+          field: "avatar"
+        }]
+        return res.status(400).json(err_msg);
+      }
+
+      return res.status(200).json(updateEmpl[1])
+    } catch (err) {
+      return res.status(500).json(err)
     }
   }
 

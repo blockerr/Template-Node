@@ -2,6 +2,8 @@ var express = require('express');
 var router = express.Router();
 var adminController = require('../controller/admin');
 var auth = require('../util/auth');
+var multer  = require('multer');
+var upload = multer()
 
 /* GET users listing. */
 router.route('/admin/signup')
@@ -16,6 +18,10 @@ router.route('/admins')
 router.route('/admin/:id')
   .put(auth, adminController.update)
   .delete(auth, adminController.delete)
+  .get(auth, adminController.employee)
+
+router.route('/admin/avatar/:id')
+  .put(auth, upload.single('avatar'), adminController.updateAvatar)
 
 router.route('/admin/password')
   .post(auth, adminController.changePassword)

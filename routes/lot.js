@@ -8,4 +8,9 @@ router.route('/lots')
   .post(auth, lotController.create)
   .get(auth, lotController.list)
 
-module.exports = router;
+  router.route('/lot/:lotNumber')
+  .post(auth, lotController.lot)
+
+
+module.exports = router; 
+ 

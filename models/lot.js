@@ -8,12 +8,13 @@ Lot.init({
     primaryKey: true,
     autoIncrement: true, 
   }, 
-  lotNumber: DataTypes.STRING,  // lô số ..
-  location: DataTypes.ARRAY(DataTypes.STRING), // vị trí 4 góc
-  avatar: DataTypes.STRING,
+  lotNumber: DataTypes.INTEGER,  // lô số ..
+  location: DataTypes.ARRAY(DataTypes.JSON), // vị trí 4 góc
+  avatar: DataTypes.ARRAY(DataTypes.STRING),
   acreage: DataTypes.STRING, // diện tích 
+  address: DataTypes.STRING,
   create_at: DataTypes.DATE,
   update_at: DataTypes.DATE,
-}, { sequelize: db, modelName: 'lot' });
+}, { sequelize: db, modelName: 'lot' }); 
   
-module.exports = Lot;
+module.exports = Lot; 

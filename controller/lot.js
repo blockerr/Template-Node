@@ -29,5 +29,23 @@ module.exports = {
         } catch (err) {
             return res.status(500).json(err);
         }
+    },
+    lot: async (req, res, next) => {
+        try {
+            const { lotNumber } = req.params;
+            console.log(lotNumber)
+            const lot = await Lot.findOne({ where: { lotNumber: lotNumber } });
+            if (!lot) {
+                const err_msg = [{
+                    error: 'Không tìm thấy',
+                    field: "lotPosition"
+                }]
+                return res.status(404).json(err_msg)
+            }
+            console.log(lot.dataValues)
+            return res.status(200).json(lot.dataValues);
+        } catch (err) {
+            return res.status(500).json(err);
+        }
     }
 }

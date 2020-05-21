@@ -14,7 +14,7 @@ Admin.init({
   phone: DataTypes.STRING,
   password: DataTypes.STRING, 
   role: DataTypes.STRING,   
-  birthday: DataTypes.DATE,  
+  birthday: DataTypes.STRING,   
   address: DataTypes.STRING,  
   avatar: DataTypes.STRING,
   create_at: DataTypes.DATE,

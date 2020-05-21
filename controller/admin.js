@@ -12,9 +12,10 @@ module.exports = {
     try {
       const data = req.body;
       data.password = await bcrypt.hash(data.password, 10);
+      data.birthday = moment(data.birthday).format('L'); 
       data.create_at = moment().format();
       data.update_at = moment().format();
-      data.role = "empl";
+      data.role = "Nhân viên";
       const findEmail = await Admin.findOne({ where: { email: data.email } });
       const findUsername = await Admin.findOne({ where: { username: data.username } });
 
@@ -89,7 +90,9 @@ module.exports = {
     try {
       const { id } = req.params;
       const data = req.body;
+      data.birthday = moment(data.birthday).format('L'); 
       data.update_at = moment().format();
+      console.log(data)
       const findUserName = await Admin.findOne({ where: { username: data.username } });
       const findUserEmail = await Admin.findOne({ where: { email: data.email } });
 
@@ -126,7 +129,7 @@ module.exports = {
 
   list: async (req, res, next) => {
     try {
-      const list = await Admin.findAll();
+      const list = await Admin.findAll({ order: [['admin_id', 'ASC']] });
       return res.status(200).json(list);
     } catch (err) {
       return res.status(500).json(err);

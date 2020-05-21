@@ -16,8 +16,14 @@ var http = require('http').createServer(app);
 // import handler
 const sequelize = require('./services/database');
 var adminRouter = require('./routes/admin'); 
-var lotRouter = require('./routes/lot')
-var investorRouter = require('./routes/investor')
+var lotRouter = require('./routes/lot');
+var investorRouter = require('./routes/investor');
+var home_advantageRouter = require('./routes/home_advantage');
+var home_communityRouter = require('./routes/home_community');
+var home_footerRouter = require('./routes/home_footer');
+var home_introduceRouter = require('./routes/home_introduce');
+var home_servicesRouter = require('./routes/home_services');
+var home_slideRouter = require('./routes/home_slide');
 
 // check auth sequelize
 sequelize
@@ -50,6 +56,13 @@ app.use(process.env.BASE_PATH, indexRouter);
 app.use(process.env.BASE_PATH, adminRouter);
 app.use(process.env.BASE_PATH, lotRouter);
 app.use(process.env.BASE_PATH, investorRouter);
+app.use(process.env.BASE_PATH, home_advantageRouter);
+app.use(process.env.BASE_PATH, home_communityRouter);
+app.use(process.env.BASE_PATH, home_footerRouter);
+app.use(process.env.BASE_PATH, home_introduceRouter);
+app.use(process.env.BASE_PATH, home_servicesRouter);
+app.use(process.env.BASE_PATH, home_slideRouter);
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
